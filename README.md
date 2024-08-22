@@ -20,7 +20,7 @@ Framework: Nest.js
 Authentication: JSON Web Tokens (JWT)
 Database: PostgreSQL
 # Getting Started
-Clone the repository: git clone https://github.com/your-username/virgool-simulation-backend.git
+Clone the repository: git clone https://github.com/abolfazlrezazadeh/virgool-backend.git
 Install dependencies: npm install or yarn install
 Create a PostgreSQL database and update the database section in config.json
 Run the application: npm run start or yarn start
