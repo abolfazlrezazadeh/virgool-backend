@@ -38,6 +38,8 @@ The backend provides a robust set of features for user management, content creat
 
 - Database: **PostgreSQL**
 
+- UI: **swagger**
+
 ## **Getting Started**
 Clone the repository: **'git clone https://github.com/abolfazlrezazadeh/virgool-backend.git'**
 
