@@ -30,13 +30,13 @@ The backend provides a robust set of features for user management, content creat
 11. Suggest Blogs: Provide users with personalized article suggestions based on their interests.
 
 ## **Technical Details**
-- Programming Language: TypeScript
+- Programming Language: **TypeScript**
 
-- Framework: Nest.js
+- Framework: **Nest.js**
 
-- Authentication: JWT (JSON Web Tokens)
+- Authentication: **JWT (JSON Web Tokens)**
 
-- Database: PostgreSQL
+- Database: **PostgreSQL**
 
 ## **Getting Started**
 Clone the repository: **'git clone https://github.com/abolfazlrezazadeh/virgool-backend.git'**
