@@ -4,6 +4,7 @@ import { join } from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeormDbConfig } from '../../config/typeorm.config';
 import { UserModule } from '../user/user.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UserModule } from '../user/user.module';
         useClass:typeormDbConfig,
         inject:[typeormDbConfig] 
     }),
+    AuthModule,
     UserModule
   ],
   controllers: [],
