@@ -45,10 +45,15 @@ export class AuthService {
         const validUsername = this.usernameVallidator(method, username)
         let user = await this.checkExistUser(method, validUsername)
         if (user) throw new ConflictException(AuthMessage.AlreadyExists)
+        if (method === authMethod.Username) {
+            throw new BadRequestException(BadRequestMessage.InvalidData)
+        }
         user = this.userRespository.create({
             [method]: username
         })
         user = await this.userRespository.save(user)
+        user.username = `m_${user.id}`
+        await this.userRespository.save(user)
         const otp = await this.saveOtp(user.id)
         return {
             code: otp.code

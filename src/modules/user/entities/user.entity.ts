@@ -5,7 +5,7 @@ import { OtpEntity } from "./otp.entity";
 
 @Entity(entityName.USER)
 export class UserEntity extends BaseFields {
-    @Column({ unique: true })
+    @Column({ unique: true, nullable: true })
     username: string
 
     @Column({ nullable: true })
@@ -13,6 +13,10 @@ export class UserEntity extends BaseFields {
 
     @Column({ nullable: true, unique: true })
     phone: string
+
+    // is it verify phone or not
+    @Column({ default: false })
+    phoneVerify: boolean;
 
     @Column({ nullable: true })
     otpId: number
