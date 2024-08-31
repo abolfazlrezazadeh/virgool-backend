@@ -8,12 +8,15 @@ import { UserEntity } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { ProlfileEntity } from '../user/entities/profile.entity';
 import { AuthMessage, BadRequestMessage } from './enums/messages.enum';
+import { OtpEntity } from '../user/entities/otp.entity';
+import { randomInt } from 'crypto';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(UserEntity) private userRespository: Repository<UserEntity>,
-        @InjectRepository(ProlfileEntity) private profileRespository: Repository<ProlfileEntity>
+        @InjectRepository(ProlfileEntity) private profileRespository: Repository<ProlfileEntity>,
+        @InjectRepository(OtpEntity) private otpRespository: Repository<OtpEntity>
 
     ) { }
     async userExistence(authDto: authDto) {
@@ -31,14 +34,54 @@ export class AuthService {
         const validUsername = this.usernameVallidator(method, username)
         const user = await this.checkExistUser(method, validUsername)
         if (!user) throw new UnauthorizedException(AuthMessage.NotFoundAccoant)
+        // otp side
+        const otp = await this.saveOtp(user.id)
+        return {
+            code: otp.code
+        }
+
     }
     async register(method: authMethod, username: string) {
         const validUsername = this.usernameVallidator(method, username)
-        const user = await this.checkExistUser(method, validUsername)
+        let user = await this.checkExistUser(method, validUsername)
         if (user) throw new ConflictException(AuthMessage.AlreadyExists)
+        user = this.userRespository.create({
+            [method]: username
+        })
+        user = await this.userRespository.save(user)
+        const otp = await this.saveOtp(user.id)
+        return {
+            code: otp.code
+        }
     }
-    async checkOtp() { 
-        
+    async checkOtp() {
+
+    }
+    async saveOtp(userId: number) {
+        const code = randomInt(10_000, 99_999).toString()
+        // 2 minuts
+        const expiresIn = new Date(Date.now() + (2 * 60 * 1000))
+        // find otp exist
+        let existOtp: boolean = false
+        let otp = await this.otpRespository.findOneBy({ userId })
+        if (otp) {
+            existOtp = true
+            otp.code = code
+            otp.expiresIn = expiresIn
+        } else {
+            otp = this.otpRespository.create({
+                userId,
+                code,
+                expiresIn
+            })
+        }
+        otp = await this.otpRespository.save(otp)
+        if (!existOtp) {
+            await this.userRespository.update(userId, { otpId: otp.id })
+        }
+        return otp;
+
+
     }
     async checkExistUser(method: authMethod, username: string) {
         let user: UserEntity;

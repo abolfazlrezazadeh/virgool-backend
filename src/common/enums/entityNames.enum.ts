@@ -2,5 +2,6 @@
 
 export enum entityName {
     USER="user",
-    PROFILE="profile"
+    PROFILE="profile",
+    OTP="otp"
 }
