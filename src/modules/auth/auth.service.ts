@@ -10,14 +10,15 @@ import { ProlfileEntity } from '../user/entities/profile.entity';
 import { AuthMessage, BadRequestMessage } from './enums/messages.enum';
 import { OtpEntity } from '../user/entities/otp.entity';
 import { randomInt } from 'crypto';
+import { TokenService } from './tokens.auth.service';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(UserEntity) private userRespository: Repository<UserEntity>,
         @InjectRepository(ProlfileEntity) private profileRespository: Repository<ProlfileEntity>,
-        @InjectRepository(OtpEntity) private otpRespository: Repository<OtpEntity>
-
+        @InjectRepository(OtpEntity) private otpRespository: Repository<OtpEntity>,
+        private tokenService:TokenService,
     ) { }
     async userExistence(authDto: authDto) {
         const { type, method, username } = authDto
@@ -37,7 +38,8 @@ export class AuthService {
         // otp side
         const otp = await this.saveOtp(user.id)
         return {
-            code: otp.code
+            code: otp.code,
+            userId:user.id
         }
 
     }
@@ -56,7 +58,8 @@ export class AuthService {
         await this.userRespository.save(user)
         const otp = await this.saveOtp(user.id)
         return {
-            code: otp.code
+            code: otp.code,
+            userId:user.id
         }
     }
     async checkOtp() {

@@ -10,7 +10,10 @@ namespace NodeJS {
         DB_HOST: string
         DB_USERNAME: string
         DB_PASSWORD: string, 
-
+        //cookie
+        COOKIE_SECRET:string
+        OTP_TOKEN_SECRET:string
+        OTP_TOKEN_EXPIRES_IN:number
     }
 
 }
