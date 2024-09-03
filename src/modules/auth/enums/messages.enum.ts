@@ -32,6 +32,7 @@ export enum BadRequestMessage {
 export enum AuthMessage {
     NotFoundAccoant = "Accoant not found",
     AlreadyExists = "User already exist",
+    tokenExpired = "Token has expired"  
 }
 
 export enum publicMessages {

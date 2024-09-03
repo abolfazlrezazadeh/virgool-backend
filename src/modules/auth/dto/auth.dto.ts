@@ -16,3 +16,9 @@ export class authDto {
     @IsEnum(authMethod)
     method:authMethod;
 }
+export class checkOtpDto {
+    @ApiProperty() 
+    @IsString()
+    @Length(5,5)
+    code:string;
+}

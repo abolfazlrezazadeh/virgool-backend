@@ -12,7 +12,8 @@ export class TokenService {
     async createOtpToken(payload: cookiePayload) {
         return await this.jwtService.signAsync(payload,{
             secret:process.env.OTP_TOKEN_SECRET,
-            expiresIn:process.env.OTP_TOKEN_EXPIRES_IN
+            // 2 minuts
+            expiresIn:60*2
         })
     }
 }
