@@ -13,7 +13,7 @@ namespace NodeJS {
         //cookie
         COOKIE_SECRET:string
         OTP_TOKEN_SECRET:string
-        OTP_TOKEN_EXPIRES_IN:number
+        OTP_TOKEN_EXPIRES_IN:string
     }
 
 }

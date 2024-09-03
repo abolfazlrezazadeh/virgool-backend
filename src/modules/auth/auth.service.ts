@@ -7,10 +7,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { ProlfileEntity } from '../user/entities/profile.entity';
-import { AuthMessage, BadRequestMessage } from './enums/messages.enum';
+import { AuthMessage, BadRequestMessage, publicMessages } from './enums/messages.enum';
 import { OtpEntity } from '../user/entities/otp.entity';
 import { randomInt } from 'crypto';
 import { TokenService } from './tokens.auth.service';
+import { Response } from 'express';
+import { CookieKeys } from './enums/cookie.enums';
+import { authresponse } from './types/authResponse';
 
 @Injectable()
 export class AuthService {
@@ -18,15 +21,18 @@ export class AuthService {
         @InjectRepository(UserEntity) private userRespository: Repository<UserEntity>,
         @InjectRepository(ProlfileEntity) private profileRespository: Repository<ProlfileEntity>,
         @InjectRepository(OtpEntity) private otpRespository: Repository<OtpEntity>,
-        private tokenService:TokenService,
+        private tokenService: TokenService,
     ) { }
-    async userExistence(authDto: authDto) {
+    async userExistence(authDto: authDto,res:Response) {
         const { type, method, username } = authDto
+        let result:authresponse;
         switch (type) {
             case authType.Login:
-                return await this.login(method, username)
+                result =await this.login(method, username)
+                return this.sendResponse(result,res)
             case authType.Register:
-                return await this.register(method, username)
+                result = await this.register(method, username)
+                return this.sendResponse(result,res)
             default:
                 throw new UnauthorizedException("failed, type is incorrect")
         }
@@ -37,9 +43,10 @@ export class AuthService {
         if (!user) throw new UnauthorizedException(AuthMessage.NotFoundAccoant)
         // otp side
         const otp = await this.saveOtp(user.id)
+        const token = await this.tokenService.createOtpToken({ userId: user.id })
         return {
             code: otp.code,
-            userId:user.id
+            token
         }
 
     }
@@ -57,9 +64,10 @@ export class AuthService {
         user.username = `m_${user.id}`
         await this.userRespository.save(user)
         const otp = await this.saveOtp(user.id)
+        const token = await this.tokenService.createOtpToken({ userId: user.id })
         return {
-            code: otp.code,
-            userId:user.id
+            code:otp.code,
+            token,
         }
     }
     async checkOtp() {
@@ -91,6 +99,14 @@ export class AuthService {
 
 
     }
+    async sendResponse(result:authresponse,res:Response) {
+        const {token,code} = result
+        res.cookie(CookieKeys.OTP,token,{httpOnly:true})
+        return res.json({
+            message: publicMessages.SendOtp,
+            code
+        })
+     }
     async checkExistUser(method: authMethod, username: string) {
         let user: UserEntity;
         if (method === authMethod.Phone) {

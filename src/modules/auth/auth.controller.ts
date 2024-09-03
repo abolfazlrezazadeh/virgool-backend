@@ -14,7 +14,7 @@ export class AuthController {
   @Post("user-existence")
   @ApiConsumes(swaggerConsumes.UrlEncoded,swaggerConsumes.Json)
   UserExistence(@Body() authDto: authDto,@Res() res:Response) {
-    const result= this.authService.userExistence(authDto)
-    res.cookie(CookieKeys.OTP).send(result)
+    return this.authService.userExistence(authDto,res)
+    
   }
 }

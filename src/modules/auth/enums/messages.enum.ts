@@ -33,3 +33,10 @@ export enum AuthMessage {
     NotFoundAccoant = "Accoant not found",
     AlreadyExists = "User already exist",
 }
+
+export enum publicMessages {
+    Success = "Success",
+    Error = "Error",
+    SendOtp = "otp was sent successfully ...",
+    OtpFailed = "sending otp is failed, please try again ..."
+}
