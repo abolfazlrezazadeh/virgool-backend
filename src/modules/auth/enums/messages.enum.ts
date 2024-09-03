@@ -32,12 +32,18 @@ export enum BadRequestMessage {
 export enum AuthMessage {
     NotFoundAccoant = "Accoant not found",
     AlreadyExists = "User already exist",
-    tokenExpired = "Token has expired"  
+    TokenExpired = "Token has expired",
+    TryAgain = "Please try again",
+    WrongOtp = "Wrong otp",
+    LoginAgain = "Please login again",
+    OtpExpired = "Otp has expired"
+
 }
 
 export enum publicMessages {
     Success = "Success",
     Error = "Error",
     SendOtp = "otp was sent successfully ...",
-    OtpFailed = "sending otp is failed, please try again ..."
+    OtpFailed = "sending otp is failed, please try again ...",
+    LoggedIn = "logged in successfully ..."
 }
