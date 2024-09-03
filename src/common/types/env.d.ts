@@ -13,6 +13,9 @@ namespace NodeJS {
         //cookie
         COOKIE_SECRET: string
         OTP_TOKEN_SECRET: string
+        // accessToken
+        ACCESS_TOKEN_SECRET: string
+        REFRESH_TOKEN_SECRET: string
     }
 
 }

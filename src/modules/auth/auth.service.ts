@@ -81,9 +81,10 @@ export class AuthService {
         if (!otp) throw new UnauthorizedException(AuthMessage.LoginAgain)
         if (otp.expiresIn < now) throw new UnauthorizedException(AuthMessage.LoginAgain)
         if (otp.code !== code) throw new UnauthorizedException(AuthMessage.WrongOtp)
-
+        const accessToken = await this.tokenService.createAccessToken({ userId })
         return {
-            message: publicMessages.LoggedIn
+            message: publicMessages.LoggedIn,
+            accessToken
         }
 
 

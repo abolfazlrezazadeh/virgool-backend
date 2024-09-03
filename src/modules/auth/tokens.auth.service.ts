@@ -26,4 +26,20 @@ export class TokenService {
             throw new UnauthorizedException(AuthMessage.TryAgain)
         }
     }
+    async createAccessToken(payload: cookiePayload) {
+        return await this.jwtService.signAsync(payload, {
+            secret: process.env.ACCESS_TOKEN_SECRET,
+            // 1 year
+            expiresIn: "1y"
+        })
+    }
+    async verifyAccessToken(token: string): Promise<cookiePayload> {
+        try {
+            return this.jwtService.verify(token, {
+                secret: process.env.ACCESS_TOKEN_SECRET
+            })
+        } catch (error) {
+            throw new UnauthorizedException(AuthMessage.TryAgain)
+        }
+    }
 }
