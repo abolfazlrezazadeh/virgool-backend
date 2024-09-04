@@ -140,6 +140,12 @@ export class AuthService {
         }
         return user
     }
+    async getUserFromAccessToken(token:string){
+        const {userId} = await this.tokenService.verifyAccessToken(token)
+        const user = await this.userRespository.findOneBy({id:userId})
+        if(user) throw new UnauthorizedException(AuthMessage.LoginIsRequired)
+        return user;
+    }
     usernameVallidator(method: authMethod, username: string) {
         switch (method) {
             case authMethod.Email:
