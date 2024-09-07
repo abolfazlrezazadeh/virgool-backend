@@ -46,5 +46,6 @@ export enum publicMessages {
     Error = "Error",
     SendOtp = "otp was sent successfully ...",
     OtpFailed = "sending otp is failed, please try again ...",
-    LoggedIn = "logged in successfully ..."
+    LoggedIn = "logged in successfully ...",
+    Created = "created successfully ...",
 }

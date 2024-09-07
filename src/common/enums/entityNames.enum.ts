@@ -3,5 +3,6 @@
 export enum entityName {
     USER="user",
     PROFILE="profile",
-    OTP="otp"
+    OTP="otp",
+    CATEGORY="category"
 }

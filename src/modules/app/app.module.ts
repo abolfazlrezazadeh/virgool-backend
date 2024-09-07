@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeormDbConfig } from '../../config/typeorm.config';
 import { UserModule } from '../user/user.module';
 import { AuthModule } from '../auth/auth.module';
+import { CategoryModule } from '../category/category.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { AuthModule } from '../auth/auth.module';
         inject:[typeormDbConfig] 
     }),
     AuthModule,
-    UserModule
+    UserModule,
+    CategoryModule
   ],
   controllers: [],
   providers: [],
