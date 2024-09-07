@@ -12,7 +12,7 @@ export class CategoryController {
 
   @Post()
   @ApiConsumes(swaggerConsumes.UrlEncoded,swaggerConsumes.Json)
-  @ApiResponse({ status: 201, description: 'The record has been successfully created.'})
+  // @ApiResponse({ status: 201, description: 'The record has been successfully created.'})
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);
   }

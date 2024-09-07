@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,21 +11,30 @@ export class CategoryService {
   constructor(
     @InjectRepository(CategoryEntity)
     private categoryRepository: Repository<CategoryEntity>,
-  ) {}
+  ) { }
   async create(createCategoryDto: CreateCategoryDto) {
-    const {title,priority} = createCategoryDto;
-    const category = await this.categoryRepository.create({
+    let { title, priority } = createCategoryDto;
+    title = await this.checkExistCategory(title)
+    const category = this.categoryRepository.create({
       title,
       priority
-    })  
+    })
     await this.categoryRepository.save(category)
     return {
-      message : publicMessages.Created
+      message: publicMessages.Created
     }
   }
 
+  async checkExistCategory(title: string): Promise<string> {
+    title = title.trim()
+    const foundedCategoy = await this.categoryRepository.findOneBy({ title })
+    if (foundedCategoy) throw new BadRequestException(publicMessages.AlreadyExist)
+    return title
+  }
+
   findAll() {
-    return `This action returns all category`;
+    const categories = this.categoryRepository.find() 
+    return categories;
   }
 
   findOne(id: number) {
