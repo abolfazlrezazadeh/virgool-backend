@@ -23,7 +23,7 @@ The backend provides a robust set of features for user management, content creat
 
 8. View Article List with Advanced Search: Display a list of articles with filtering and search capabilities.
 
- 9. Create and Manage Comments: Enable users to comment on articles and manage comments.
+9. Create and Manage Comments: Enable users to comment on articles and manage comments.
 
 10. Like and Bookmark Blogs: Allow users to like and bookmark articles for later reading.
 
