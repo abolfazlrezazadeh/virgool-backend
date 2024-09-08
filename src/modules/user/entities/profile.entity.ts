@@ -19,4 +19,6 @@ export class ProlfileEntity extends BaseFields{
     birthday:string
     @Column({nullable:true})
     linkedIn:string
+    @Column({nullable:true})
+    twitter:string
 }
