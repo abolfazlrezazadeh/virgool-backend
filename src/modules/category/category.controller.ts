@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { ApiConsumes, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiOkResponse, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { swaggerConsumes } from '../auth/enums/swagger-consumes.enum';
 import { paginationDto } from 'src/common/dto/pagination.dto';
 import { paginationDecorator } from 'src/common/decorators/pagination.decorator';
@@ -18,7 +18,7 @@ export class CategoryController {
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);
   }
-
+  @ApiOkResponse({type: CreateCategoryDto})
   @Get()
   @paginationDecorator()
   findAll(@Query() paginationDto:paginationDto) {
