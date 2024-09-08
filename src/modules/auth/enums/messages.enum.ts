@@ -50,3 +50,8 @@ export enum publicMessages {
     Created = "created successfully ...",
     AlreadyExist = "already exist ...",
 }
+export enum CategoryMessages {
+    CategoryNotFound = "Category not found",
+    Deleted = "Category deleted successfully ",
+    Updated = "Category updated successfully ",
+}

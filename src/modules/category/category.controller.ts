@@ -30,11 +30,11 @@ export class CategoryController {
     return this.categoryService.findOne(+id);
   }
 
+  @ApiConsumes(swaggerConsumes.UrlEncoded, swaggerConsumes.Json)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
     return this.categoryService.update(+id, updateCategoryDto);
   }
-
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.categoryService.remove(+id);
