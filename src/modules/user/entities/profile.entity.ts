@@ -1,10 +1,13 @@
 import { BaseFields } from "src/common/abstracts/baseFields.abstract";
 import { entityName } from "src/common/enums/entityNames.enum";
-import { Column, Entity } from "typeorm";
+import { Column, Entity, OneToOne } from "typeorm";
+import { UserEntity } from "./user.entity";
 
 
 @Entity(entityName.PROFILE)
 export class ProlfileEntity extends BaseFields{
+    @Column()
+    userId:number
     @Column()
     naickName:string
     @Column({nullable:true})
@@ -21,4 +24,8 @@ export class ProlfileEntity extends BaseFields{
     linkedIn:string
     @Column({nullable:true})
     twitter:string
+
+    // relation of user entity
+    @OneToOne(() => UserEntity, user => user.profile, { onDelete: "CASCADE" })
+    user: UserEntity
 }
