@@ -49,6 +49,7 @@ export enum publicMessages {
     LoggedIn = "logged in successfully ...",
     Created = "created successfully ...",
     AlreadyExist = "already exist ...",
+    ImageFormat = "image format is not valid, please use jpg or png files ...",
 }
 export enum CategoryMessages {
     CategoryNotFound = "Category not found",
