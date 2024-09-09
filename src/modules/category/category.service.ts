@@ -1,42 +1,75 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryEntity } from './entities/category.entity';
 import { Repository } from 'typeorm';
-import { publicMessages } from '../auth/enums/messages.enum';
+import { CategoryMessages, publicMessages } from '../auth/enums/messages.enum';
+import { paginationDto } from 'src/common/dto/pagination.dto';
+import { paginationResponse, paginationSolver } from 'src/common/utils/pagination.util';
 
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectRepository(CategoryEntity)
     private categoryRepository: Repository<CategoryEntity>,
-  ) {}
+  ) { }
   async create(createCategoryDto: CreateCategoryDto) {
-    const {title,priority} = createCategoryDto;
-    const category = await this.categoryRepository.create({
+    let { title, priority } = createCategoryDto;
+    title = await this.checkExistCategory(title)
+    const category = this.categoryRepository.create({
       title,
       priority
-    })  
+    })
     await this.categoryRepository.save(category)
     return {
-      message : publicMessages.Created
+      message: publicMessages.Created
     }
   }
 
-  findAll() {
-    return `This action returns all category`;
+  async checkExistCategory(title: string): Promise<string> {
+    title = title.trim()
+    const foundedCategoy = await this.categoryRepository.findOneBy({ title })
+    if (foundedCategoy) throw new BadRequestException(publicMessages.AlreadyExist)
+    return title
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async findAll(paginationDto: paginationDto) {
+    let { page, skip, limit } = paginationSolver(paginationDto)
+    const [categories, count] = await this.categoryRepository.findAndCount({
+      where: {},
+      skip: skip,
+      take: limit
+    })
+    return {
+      pagination: paginationResponse(page, limit, count),
+      categories
+    }
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async findOne(id: number) {
+    const category = await this.categoryRepository.findOneBy({ id })
+    if (!category) throw new BadRequestException(CategoryMessages.CategoryNotFound)
+    return category
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+    let category = await this.findOne(id)
+    const { title, priority } = updateCategoryDto
+    if(title) category.title = title
+    if(priority) category.priority = priority
+    category = await this.categoryRepository.save(category,{ reload: true})
+    return {
+      message: CategoryMessages.Updated,
+      category
+    }
+  }
+
+  async remove(id: number) {
+    await this.findOne(id)
+    await this.categoryRepository.delete(id)
+    return {
+      message: CategoryMessages.Deleted
+    }
   }
 }

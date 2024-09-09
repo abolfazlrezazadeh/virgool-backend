@@ -48,4 +48,10 @@ export enum publicMessages {
     OtpFailed = "sending otp is failed, please try again ...",
     LoggedIn = "logged in successfully ...",
     Created = "created successfully ...",
+    AlreadyExist = "already exist ...",
+}
+export enum CategoryMessages {
+    CategoryNotFound = "Category not found",
+    Deleted = "Category deleted successfully ",
+    Updated = "Category updated successfully ",
 }
