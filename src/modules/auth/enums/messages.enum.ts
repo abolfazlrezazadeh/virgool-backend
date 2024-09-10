@@ -48,6 +48,7 @@ export enum publicMessages {
     OtpFailed = "sending otp is failed, please try again ...",
     LoggedIn = "logged in successfully ...",
     Created = "created successfully ...",
+    Updated ="Updated successfully",
     AlreadyExist = "already exist ...",
     ImageFormat = "image format is not valid, please use jpg or png files ...",
 }
