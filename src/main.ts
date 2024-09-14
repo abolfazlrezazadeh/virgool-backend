@@ -3,11 +3,13 @@ import { swaggerConfig } from './config/swagger.config';
 import { AppModule } from './modules/app/app.module';
 import * as cookieParser from 'cookie-parser';
 import { json, urlencoded } from 'express';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   swaggerConfig(app)
   const { PORT,COOKIE_SECRET } = process.env
+  app.useStaticAssets("public")
   app.use(cookieParser(COOKIE_SECRET));
   app.use(json({ limit: '50mb' }));
   app.use(urlencoded({ extended: true, limit: '50mb' }));

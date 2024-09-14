@@ -42,6 +42,14 @@ export class UserService {
 
         }
     }
+    async profile(){
+        const {id} = this.req.user
+        const user = await this.userRepository.findOne({
+            where:{id},
+            relations:['profile']
+        })
+        return user
+    }
     async findUserProfile(id: number) {
        const userProfile =  await this.profileRepository.findOneBy({ userId : id })
        return userProfile ? userProfile : null

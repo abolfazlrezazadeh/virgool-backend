@@ -32,4 +32,9 @@ export class UserController {
     @Body() updateProfileDto: ProfileDto) {
     return this.UserService.updateProfile(files ,updateProfileDto);
   }
+
+  @Get("profile")
+  profile(){
+    return this.UserService.profile()
+  }
 }
