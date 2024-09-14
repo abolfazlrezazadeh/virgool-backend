@@ -9,6 +9,7 @@ import { ProlfileEntity } from './entities/profile.entity';
 import { deleteEmptyInputs } from 'src/common/utils/functions.util';
 import { publicMessages } from '../auth/enums/messages.enum';
 import { Response } from 'express';
+import { imageFiles } from './types/imageFiles.types';
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserService {
@@ -17,19 +18,11 @@ export class UserService {
         @InjectRepository(ProlfileEntity) private profileRepository: Repository<ProlfileEntity>,
         @Inject(REQUEST) private req: Request
     ) { }
-    async updateProfile(files: any, updateProfileDto: ProfileDto) {
+    async updateProfile(files: imageFiles, updateProfileDto: ProfileDto) {
         try {
-            if (files?.image.length > 0) {
-                let [image] = files?.image
-                updateProfileDto.image = (image?.path).replace(/\\/g, "/");
-            }
-            if (files?.backgroundImage.length > 0) {
-                let [image] = files?.backgroundImage
-                updateProfileDto.backgroundImage = (image?.path).replace(/\\/g, "/");
-            }
             const { profileId, id: userId, } = this.req.user
+            this.setImageToDto(files, updateProfileDto)
             const body = deleteEmptyInputs(updateProfileDto)
-
             let profile = await this.profileRepository.findOneBy({ userId })
             if (!profile) {
                 profile = this.profileRepository.create({ ...body, userId })
@@ -50,11 +43,17 @@ export class UserService {
         }
     }
     async findUserProfile(id: number) {
-        return await this.userRepository.findOne({
-            where: { id },
-            relations: {
-                profile: true
-            }
-        })
+       const userProfile =  await this.profileRepository.findOneBy({ userId : id })
+       return userProfile ? userProfile : null
+    }
+    setImageToDto(files: imageFiles, updateProfileDto: ProfileDto){
+        if (files?.image.length > 0) {
+            let [image] = files?.image
+            updateProfileDto.image = (image?.path).replace(/\\/g, "/");
+        }
+        if (files?.backgroundImage.length > 0) {
+            let [image] = files?.backgroundImage
+            updateProfileDto.backgroundImage = (image?.path).replace(/\\/g, "/");
+        }
     }
 }

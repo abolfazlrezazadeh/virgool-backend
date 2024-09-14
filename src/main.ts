@@ -16,6 +16,11 @@ async function bootstrap() {
     console.log(`swagger: http://localhost:${PORT}/swagger`)
 
   }
+  // await app.listen(PORT,3000, () => {
+  //   console.log(`api: http://localhost:${PORT}`)
+  //   console.log(`swagger: http://localhost:${PORT}/swagger`)
+
+  // }
   );
 }
 bootstrap();

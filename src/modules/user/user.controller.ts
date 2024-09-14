@@ -6,7 +6,9 @@ import { swaggerConsumes } from '../auth/enums/swagger-consumes.enum';
 import { authGuard } from '../auth/guards/auth.guard';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { fileFilter, multerDestination, multerFileName } from 'src/common/utils/multer.util';
+import { fileFilter, multerDestination, multerFileName, multerStorage } from 'src/common/utils/multer.util';
+import { imageFiles } from './types/imageFiles.types';
+import { uploadOptionalFiles } from 'src/common/decorators/uploadFile.decorator';
 
 @Controller('user')
 @ApiTags("user")
@@ -21,15 +23,12 @@ export class UserController {
     { name: 'image', maxCount: 1 },
     { name: 'backgroundImage', maxCount: 1 },
   ],{
-    storage:diskStorage({
-      destination:multerDestination("user-profile"),
-      filename:multerFileName,
-    }),
+    storage:multerStorage("user-profile"), 
     fileFilter:fileFilter
   }))
   @ApiConsumes(swaggerConsumes.multipartData)
   changeProfile(
-    @UploadedFiles(new ParseFilePipe({fileIsRequired:false,validators:[]})) files:any,
+    @uploadOptionalFiles() files:imageFiles,
     @Body() updateProfileDto: ProfileDto) {
     return this.UserService.updateProfile(files ,updateProfileDto);
   }
