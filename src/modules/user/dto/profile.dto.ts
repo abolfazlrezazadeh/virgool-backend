@@ -1,6 +1,7 @@
-import { ApiPropertyOptional } from "@nestjs/swagger"
-import { IsEnum, IsOptional, IsUrl, Length } from "class-validator"
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
+import { IsEmail, IsEnum, IsOptional, IsUrl, Length } from "class-validator"
 import { genderChoose } from "src/modules/auth/enums/gender.enum"
+import { AuthMessage } from "src/modules/auth/enums/messages.enum"
 
 export class ProfileDto {
     @ApiPropertyOptional()
@@ -36,4 +37,10 @@ export class ProfileDto {
     @IsOptional()
     @IsUrl({},{message:"Invalid url"})
     twitter:string
+}
+
+export class updateEmailDto {
+    @ApiProperty()
+    @IsEmail({},{message:AuthMessage.EmailNotCorrect})
+    email:string
 }

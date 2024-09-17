@@ -37,7 +37,8 @@ export enum AuthMessage {
     WrongOtp = "Wrong otp",
     LoginAgain = "Please login again",
     LoginIsRequired = "Login to your accoant",
-    OtpExpired = "Otp has expired"
+    OtpExpired = "Otp has expired",
+    EmailNotCorrect ="Email is not correcr"
 
 }
 
