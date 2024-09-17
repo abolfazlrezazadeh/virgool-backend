@@ -57,11 +57,11 @@ export class UserService {
     setImageToDto(files: imageFiles, updateProfileDto: ProfileDto){
         if (files?.image.length > 0) {
             let [image] = files?.image
-            updateProfileDto.image = (image?.path).replace(/\\/g, "/");
+            updateProfileDto.image = (image?.path).replace(/\\/g, "/").slice(7);
         }
         if (files?.backgroundImage.length > 0) {
             let [image] = files?.backgroundImage
-            updateProfileDto.backgroundImage = (image?.path).replace(/\\/g, "/");
+            updateProfileDto.backgroundImage = (image?.path).replace(/\\/g, "/").slice(7);
         }
     }
 }
