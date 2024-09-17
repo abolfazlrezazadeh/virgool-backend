@@ -51,6 +51,7 @@ export enum publicMessages {
     Updated ="Updated successfully",
     AlreadyExist = "already exist ...",
     ImageFormat = "image format is not valid, please use jpg or png files ...",
+    ExistEmail = "email already exist ...",
 }
 export enum CategoryMessages {
     CategoryNotFound = "Category not found",

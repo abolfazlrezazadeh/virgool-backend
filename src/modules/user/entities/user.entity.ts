@@ -15,27 +15,32 @@ export class UserEntity extends BaseFields {
     @Column({ nullable: true, unique: true })
     phone: string
 
-    // is it verify phone or not
-    @Column({ default: false })
-    phoneVerify: boolean;
-
     @Column({ nullable: true })
     otpId: number
-    
+
     @OneToOne(() => OtpEntity, otp => otp.user, { nullable: true })
     @JoinColumn({ name: 'otpId' })
     otp: OtpEntity
-    
+
     //relation to profile entity
     @OneToOne(() => ProlfileEntity, profile => profile.user, { nullable: true, cascade: true })
     @JoinColumn()
     profile: ProlfileEntity
-    
+
     @Column({ nullable: true })
     profileId: number
-    
+
     @Column({ nullable: true, unique: true })
     email: string
+    
+    @Column({ nullable: true, unique: true })
+    newEmail: string
+
+    @Column({ nullable: true, default: false })
+    verifyEmail: boolean
+
+    @Column({ nullable: true, default: false })
+    verifyPhone: boolean
 
     @CreateDateColumn()
     createdAt: Date
