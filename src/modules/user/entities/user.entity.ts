@@ -38,6 +38,9 @@ export class UserEntity extends BaseFields {
     
     @Column({ nullable: true, unique: true })
     newEmail: string
+    
+    @Column({ nullable: true, unique: true })
+    newPhone: string
 
     @Column({ nullable: true, default: false })
     verifyEmail: boolean

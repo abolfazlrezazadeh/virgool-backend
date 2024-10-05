@@ -113,6 +113,48 @@ export class UserService {
         }
 
     }
+    async changePhone(phone: string) { 
+        const { id } = this.request.user
+        const user = await this.userRepository.findOneBy({ phone })
+        // phone has been used by another one
+        if (user && user.id !== id) {
+            throw new ConflictException(publicMessages.ExistPhone)
+        }
+        // phone is the same phone
+        else if (user && user.id == id) {
+            return {
+                status: 200,
+                message: publicMessages.Updated
+            }
+        }
+        await this.userRepository.update({id},{newPhone:phone})
+        const otp = await this.authService.saveOtp(id, authMethod.Phone)        
+        const token = await this.tokenService.createPhoneToken({  phone})
+        return {
+            status: 200,
+            otp: otp.code,
+            token
+        }
+    }
+    async verifyPhone(code: string) {
+        const { id: userId, newEmail } = this.request.user
+        const token = this.request.cookies?.[CookieKeys.EMAIL]
+        if (!token) throw new UnauthorizedException(AuthMessage.TokenExpired)
+        const { email } = await this.tokenService.verifyEmailToken(token)
+        if (email !== newEmail) throw new BadRequestException(AuthMessage.WrongEmail)
+        const otp = await this.checkotp(userId, code)
+        if (otp.method !== authMethod.Email) throw new BadRequestException(AuthMessage.WrongOtp)
+        await this.userRepository.update({id:userId},{
+            email,
+            verifyEmail:true,
+            newEmail:null
+        })
+        // await this.OtpEntity.delete({userId})
+        return {
+            message: publicMessages.Updated,        
+        }
+
+    }
     async checkotp(userId: number, code: string) {
         const now = new Date()
         const otp = await this.OtpEntity.findOneBy({ userId })
@@ -121,27 +163,5 @@ export class UserService {
         if (otp.code !== code) throw new BadRequestException(AuthMessage.WrongOtp)
         return otp
     }
-    // async changePhone(phone: string) {
-    //     const { id } = this.request.user
-    //     const user = await this.userRepository.findOneBy({ phone })
-    //     // eamil has been used by another one
-    //     if (user.id !== id) {
-    //         throw new ConflictException(publicMessages.ExistPhone)
-    //     }
-    //     // email is the same email
-    //     else if (user && user.id === id) {
-    //         return {
-    //             status: 200,
-    //             message: publicMessages.Updated
-    //         }
-    //     }
-    //     user.newEmail = email
-    //     const otp = await this.authService.saveOtp(id)
-    //     const token = await this.tokenService.createEmailToken({ email })
-    //     return {
-    //         status: 200,
-    //         otp: otp.code,
-    //         token
-    //     }
-    // }
+
 }
