@@ -71,4 +71,8 @@ export class UserController {
       message: publicMessages.SendOtp
     })
   }
+  @Patch('verify-phone')
+  async verifyPhone(@Body() checkOtpDto: checkOtpDto) {
+    return await this.UserService.changePhone(checkOtpDto.code)
+  }
 }
