@@ -18,6 +18,9 @@ export class UserEntity extends BaseFields {
     @Column({ nullable: true })
     otpId: number
 
+    @Column({ nullable: true })
+    method: string
+
     @OneToOne(() => OtpEntity, otp => otp.user, { nullable: true })
     @JoinColumn({ name: 'otpId' })
     otp: OtpEntity

@@ -44,7 +44,7 @@ export class AuthService {
         const user = await this.checkExistUser(method, validUsername)
         if (!user) throw new UnauthorizedException(AuthMessage.NotFoundAccoant)
         // otp side
-        const otp = await this.saveOtp(user.id)
+        const otp = await this.saveOtp(user.id,method)
         const token = await this.tokenService.createOtpToken({ userId: user.id })
         return {
             code: otp.code,
@@ -61,11 +61,12 @@ export class AuthService {
         }
         user = this.userRespository.create({
             [method]: username
+
         })
         user = await this.userRespository.save(user)
         user.username = `m_${user.id}`
         await this.userRespository.save(user)
-        const otp = await this.saveOtp(user.id)
+        const otp = await this.saveOtp(user.id,method)
         const token = await this.tokenService.createOtpToken({ userId: user.id })
         return {
             code: otp.code,
@@ -81,6 +82,11 @@ export class AuthService {
         if (!otp) throw new UnauthorizedException(AuthMessage.LoginAgain)
         if (otp.expiresIn < now) throw new UnauthorizedException(AuthMessage.LoginAgain)
         if (otp.code !== code) throw new UnauthorizedException(AuthMessage.WrongOtp)
+        if (otp.method === authMethod.Email) {
+            await this.userRespository.update({ id: userId }, { verifyEmail: true })
+        } else if (otp.method === authMethod.Phone) {
+            await this.userRespository.update({ id: userId }, { verifyPhone: true })
+        }
         const accessToken = await this.tokenService.createAccessToken({ userId })
         return {
             message: publicMessages.LoggedIn,
@@ -89,7 +95,7 @@ export class AuthService {
 
 
     }
-    async saveOtp(userId: number) {
+    async saveOtp(userId: number, method:authMethod) {
         const code = randomInt(10_000, 99_999).toString()
         // 2 minuts
         const expiresIn = new Date(Date.now() + (2 * 60 * 1000))
@@ -100,11 +106,13 @@ export class AuthService {
             existOtp = true
             otp.code = code
             otp.expiresIn = expiresIn
+            otp.method = method
         } else {
             otp = this.otpRespository.create({
                 userId,
                 code,
-                expiresIn
+                expiresIn,
+                method
             })
         }
         otp = await this.otpRespository.save(otp)
@@ -140,10 +148,10 @@ export class AuthService {
         }
         return user
     }
-    async getUserFromAccessToken(token:string){
-        const {userId} = await this.tokenService.verifyAccessToken(token)
-        const user = await this.userRespository.findOneBy({id:userId})
-        if(!user) throw new UnauthorizedException(AuthMessage.LoginIsRequired)
+    async getUserFromAccessToken(token: string) {
+        const { userId } = await this.tokenService.verifyAccessToken(token)
+        const user = await this.userRespository.findOneBy({ id: userId })
+        if (!user) throw new UnauthorizedException(AuthMessage.LoginIsRequired)
         return user;
     }
     usernameVallidator(method: authMethod, username: string) {

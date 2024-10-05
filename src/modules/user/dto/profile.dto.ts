@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
-import { IsEmail, IsEnum, IsOptional, IsUrl, Length } from "class-validator"
+import { IsEmail, IsEnum, IsMobilePhone, IsOptional, IsUrl, Length } from "class-validator"
 import { genderChoose } from "src/modules/auth/enums/gender.enum"
 import { AuthMessage } from "src/modules/auth/enums/messages.enum"
 
@@ -43,4 +43,9 @@ export class updateEmailDto {
     @ApiProperty()
     @IsEmail({},{message:AuthMessage.EmailNotCorrect})
     email:string
+}
+export class updatePhoneDto {
+    @ApiProperty()
+    @IsMobilePhone("fa-IR",{},{message:AuthMessage.PhoneNotCorrect})
+    phone:string
 }

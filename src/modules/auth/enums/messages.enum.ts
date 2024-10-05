@@ -38,7 +38,9 @@ export enum AuthMessage {
     LoginAgain = "Please login again",
     LoginIsRequired = "Login to your accoant",
     OtpExpired = "Otp has expired",
-    EmailNotCorrect ="Email is not correcr"
+    EmailNotCorrect ="Email is not correcr",
+    PhoneNotCorrect ="Phone number is not correcr",
+    WrongEmail = "Wrong email",
 
 }
 
@@ -53,9 +55,18 @@ export enum publicMessages {
     AlreadyExist = "already exist ...",
     ImageFormat = "image format is not valid, please use jpg or png files ...",
     ExistEmail = "email already exist ...",
+    ExistPhone = "phone number already exist ...",
+    ExistUsername = "email already exist ...",
 }
 export enum CategoryMessages {
     CategoryNotFound = "Category not found",
     Deleted = "Category deleted successfully ",
     Updated = "Category updated successfully ",
+}
+
+export enum NotFoundMessages {
+    NotFound = "Not found",
+    UserNotFound = "User not found",
+    CategoryNotFound = "Category not found",
+    PostNotFound = "Post not found",
 }
