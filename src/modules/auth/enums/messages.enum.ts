@@ -41,6 +41,7 @@ export enum AuthMessage {
     EmailNotCorrect ="Email is not correcr",
     PhoneNotCorrect ="Phone number is not correcr",
     WrongEmail = "Wrong email",
+    WrongPhone = "Wrong Phone"
 
 }
 

@@ -137,17 +137,17 @@ export class UserService {
         }
     }
     async verifyPhone(code: string) {
-        const { id: userId, newEmail } = this.request.user
-        const token = this.request.cookies?.[CookieKeys.EMAIL]
+        const { id: userId, newPhone } = this.request.user
+        const token = this.request.cookies?.[CookieKeys.PHONE]
         if (!token) throw new UnauthorizedException(AuthMessage.TokenExpired)
-        const { email } = await this.tokenService.verifyEmailToken(token)
-        if (email !== newEmail) throw new BadRequestException(AuthMessage.WrongEmail)
+        const { phone } = await this.tokenService.verifyPhoneToken(token)
+        if (phone !== newPhone) throw new BadRequestException(AuthMessage.WrongPhone)
         const otp = await this.checkotp(userId, code)
-        if (otp.method !== authMethod.Email) throw new BadRequestException(AuthMessage.WrongOtp)
+        if (otp.method !== authMethod.Phone) throw new BadRequestException(AuthMessage.WrongOtp)
         await this.userRepository.update({id:userId},{
-            email,
-            verifyEmail:true,
-            newEmail:null
+            phone,
+            verifyPhone:true,
+            newPhone:null
         })
         // await this.OtpEntity.delete({userId})
         return {
