@@ -10,7 +10,7 @@ export class Blog extends BaseFields {
     description: string
     @Column()
     content: string
-    @Column()
+    @Column({nullable:true})
     image: string
     @Column({default:blogStatus.Draft})
     status: string
