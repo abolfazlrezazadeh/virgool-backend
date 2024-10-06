@@ -1,8 +1,6 @@
 import { BaseFields } from "src/common/abstracts/baseFields.abstract";
-import { entityName } from "src/common/enums/entityNames.enum";
-import { Column, CreateDateColumn, Entity, UpdateDateColumn } from "typeorm";
-import { blogStatus } from "../enums/status.enum";
-@Entity(entityName.Blog)
+import { Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
+
 export class Blog extends BaseFields {
     @Column()
     title: string
@@ -12,7 +10,7 @@ export class Blog extends BaseFields {
     content: string
     @Column()
     image: string
-    @Column({default:blogStatus.Draft})
+    @Column()
     status: string
     @Column()
     authorId: number
