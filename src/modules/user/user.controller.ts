@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards, UseInterceptors, UploadedFiles, ParseFilePipe, Res } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { ProfileDto, updateEmailDto, updatePhoneDto } from './dto/profile.dto';
+import { ProfileDto, updateEmailDto, updatePhoneDto, updateUsernameDto } from './dto/profile.dto';
 import { swaggerConsumes } from '../auth/enums/swagger-consumes.enum';
 import { authGuard } from '../auth/guards/auth.guard';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
@@ -54,7 +54,7 @@ export class UserController {
     })
   }
 
-  @Post('verify-email')
+  @Post('verify-email-otp')
   @ApiConsumes(swaggerConsumes.UrlEncoded, swaggerConsumes.Json)
   async verifyEmail(@Body() checkOtpDto: checkOtpDto) {
     return this.UserService.verifyEmail(checkOtpDto.code)
@@ -71,8 +71,14 @@ export class UserController {
       message: publicMessages.SendOtp
     })
   }
-  @Patch('verify-phone')
+  @Post('verify-phone-otp')
+  @ApiConsumes(swaggerConsumes.UrlEncoded, swaggerConsumes.Json)
   async verifyPhone(@Body() checkOtpDto: checkOtpDto) {
     return await this.UserService.changePhone(checkOtpDto.code)
+  }
+  @Post("change-username")
+  @ApiConsumes(swaggerConsumes.UrlEncoded, swaggerConsumes.Json)
+  changeUsername(@Body() updateUsernameDto: updateUsernameDto) {
+    return this.UserService.changeUserName(updateUsernameDto.username)
   }
 }

@@ -163,5 +163,16 @@ export class UserService {
         if (otp.code !== code) throw new BadRequestException(AuthMessage.WrongOtp)
         return otp
     }
+    async changeUserName(username:string){
+        const {id} = this.request.user
+        const isExisrUser = await this.userRepository.findOneBy({username})
+        if(isExisrUser){
+            throw new BadRequestException(AuthMessage.UsernameExist)
+        }
+        await this.userRepository.update({id},{username})
+        return {
+            message : "Username updated successfully"
+        }
+    }
 
 }
