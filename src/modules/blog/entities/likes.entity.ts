@@ -1,15 +1,23 @@
 import { BaseFields } from "src/common/abstracts/baseFields.abstract";
-import { Column } from "typeorm";
+import { entityName } from "src/common/enums/entityNames.enum";
+import { UserEntity } from "src/modules/user/entities/user.entity";
+import { Column, Entity, ManyToOne } from "typeorm";
+import { BlogEntity } from "./blog.entity";
 
-export class Blog extends BaseFields{
+@Entity(entityName.BlogLikes)
+export class BlogLikesEntity extends BaseFields {
     @Column()
-    title:string
+    blogId: number
     @Column()
-    description:string
+    userId: number
+    @ManyToOne(() => UserEntity, user => user.blogLikes, { onDelete: "CASCADE" })
+    user: UserEntity
+    @ManyToOne(() => BlogEntity, blog => blog.likes, { onDelete: "CASCADE" })
+    blog: BlogEntity
+
+
     @Column()
-    content:string
+    image: string
     @Column()
-    image:string
-    @Column()
-    authorId:number
+    authorId: number
 }

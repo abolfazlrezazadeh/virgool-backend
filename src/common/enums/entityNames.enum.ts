@@ -6,5 +6,6 @@ export enum entityName {
     OTP="otp",
     CATEGORY="category",
     Blog="blog",
+    BlogLikes="blog_likes"
     
 }

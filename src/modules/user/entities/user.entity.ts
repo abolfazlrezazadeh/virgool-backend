@@ -1,8 +1,10 @@
 import { BaseFields } from "src/common/abstracts/baseFields.abstract";
 import { entityName } from "src/common/enums/entityNames.enum";
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, UpdateDateColumn } from "typeorm";
 import { OtpEntity } from "./otp.entity";
 import { ProlfileEntity } from "./profile.entity";
+import { BlogEntity } from "src/modules/blog/entities/blog.entity";
+import {  BlogLikesEntity } from "src/modules/blog/entities/likes.entity";
 
 @Entity(entityName.USER)
 export class UserEntity extends BaseFields {
@@ -41,6 +43,12 @@ export class UserEntity extends BaseFields {
     
     @Column({ nullable: true, unique: true })
     newPhone: string
+
+    @OneToMany(() => BlogEntity, blog=> blog.author)
+    blogs: BlogEntity[]
+
+    @OneToMany(() => BlogLikesEntity, like=> like.user)
+    blogLikes: BlogLikesEntity[]
 
     @Column({ nullable: true, default: false })
     verifyEmail: boolean
