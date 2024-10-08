@@ -1,3 +1,4 @@
+import { Blog } from '../../modules/blog/entities/bookmarks.entity';
 
 
 export enum entityName {
@@ -6,6 +7,8 @@ export enum entityName {
     OTP="otp",
     CATEGORY="category",
     Blog="blog",
-    BlogLikes="blog_likes"
+    BlogLikes="blogLikes",
+    BlogComments="blogComments",
+    BlogBookmarks="blogBookmarks"
     
 }

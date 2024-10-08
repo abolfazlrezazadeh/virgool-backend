@@ -5,6 +5,7 @@ import { OtpEntity } from "./otp.entity";
 import { ProlfileEntity } from "./profile.entity";
 import { BlogEntity } from "src/modules/blog/entities/blog.entity";
 import {  BlogLikesEntity } from "src/modules/blog/entities/likes.entity";
+import { BlogBookmarkEntity } from "src/modules/blog/entities/bookmarks.entity";
 
 @Entity(entityName.USER)
 export class UserEntity extends BaseFields {
@@ -46,9 +47,12 @@ export class UserEntity extends BaseFields {
 
     @OneToMany(() => BlogEntity, blog=> blog.author)
     blogs: BlogEntity[]
-
+    // blog likes
     @OneToMany(() => BlogLikesEntity, like=> like.user)
     blogLikes: BlogLikesEntity[]
+    // blog bookmarks
+    @OneToMany(() => BlogBookmarkEntity, bookmark=> bookmark.user)
+    blogBookmarks: BlogLikesEntity[]
 
     @Column({ nullable: true, default: false })
     verifyEmail: boolean

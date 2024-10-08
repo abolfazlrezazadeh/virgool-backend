@@ -14,10 +14,4 @@ export class BlogLikesEntity extends BaseFields {
     user: UserEntity
     @ManyToOne(() => BlogEntity, blog => blog.likes, { onDelete: "CASCADE" })
     blog: BlogEntity
-
-
-    @Column()
-    image: string
-    @Column()
-    authorId: number
 }

@@ -4,6 +4,7 @@ import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, UpdateDateColum
 import { blogStatus } from "../enums/status.enum";
 import { UserEntity } from "src/modules/user/entities/user.entity";
 import { BlogLikesEntity } from "./likes.entity";
+import { BlogBookmarkEntity } from "./bookmarks.entity";
 @Entity(entityName.Blog)
 export class BlogEntity extends BaseFields {
     @Column()
@@ -18,10 +19,15 @@ export class BlogEntity extends BaseFields {
     status: string
     @Column()
     authorId: number
+    
     @ManyToOne(() => UserEntity, user => user.blogs, { onDelete: "CASCADE" })
     author: UserEntity
+
     @OneToMany(() => BlogLikesEntity , likes => likes.blog, {onDelete:"CASCADE"})
     likes: BlogLikesEntity[]
+
+    @OneToMany(() => BlogBookmarkEntity , bookmark => bookmark.blog, {onDelete:"CASCADE"})
+    bookmark: BlogLikesEntity[]
     @CreateDateColumn()
     createdAt: Date
     @UpdateDateColumn()
