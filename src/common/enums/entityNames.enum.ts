@@ -1,4 +1,3 @@
-import { Blog } from '../../modules/blog/entities/bookmarks.entity';
 
 
 export enum entityName {
