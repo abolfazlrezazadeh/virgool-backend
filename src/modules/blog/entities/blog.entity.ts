@@ -16,6 +16,10 @@ export class BlogEntity extends BaseFields {
     content: string
     @Column({ nullable: true })
     image: string
+    @Column({ unique: true })
+    slug: string
+    @Column()
+    c: string
     @Column({ default: blogStatus.Draft })
     status: string
     @Column()
