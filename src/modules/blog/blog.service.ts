@@ -1,11 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { BlogEntity } from './entities/blog.entity';
+import { Repository } from 'typeorm';
+import { createSlug } from 'src/common/utils/functions.util';
 
 @Injectable()
 export class BlogService {
+  constructor(
+    @InjectRepository(BlogEntity) private blogRepository: Repository<BlogEntity>
+  ) { }
   create(createBlogDto: CreateBlogDto) {
-    return 'This action adds a new blog';
+    let { title, slug } = createBlogDto
+    let slugData = slug ?? title
+    createBlogDto.slug = createSlug(slugData)
+    return createBlogDto;
   }
 
   findAll() {

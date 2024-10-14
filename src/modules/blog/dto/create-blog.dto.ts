@@ -25,7 +25,7 @@ export class CreateBlogDto {
     @ApiProperty({ example: 'content' })
     @IsNotEmpty()
     @IsString()
-    @Length(300)
+    @Length(20)
     content: string;
 
     @ApiPropertyOptional({nullable:true,format:"binary"})

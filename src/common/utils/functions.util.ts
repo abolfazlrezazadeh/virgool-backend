@@ -11,3 +11,8 @@ export function deleteEmptyInputs(obj: ProfileDto) {
     
   return obj
 }
+
+
+export function createSlug(str:string){
+    return str?.replace(/[ءأإ‹›«»ٍِيٖۤ«:؛\[\.\]\{\}ۀًٌَُُْٰٔ!%ؤ،؟^&\×\)(ـ\+="'~`)]+/g, '')?.replace(/[\s]+/g, "-")
+}
