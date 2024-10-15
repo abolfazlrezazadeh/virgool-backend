@@ -1,10 +1,10 @@
-import { Inject, Injectable, Scope } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, Scope } from '@nestjs/common';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BlogEntity } from './entities/blog.entity';
 import { Repository } from 'typeorm';
-import { createSlug } from 'src/common/utils/functions.util';
+import { createSlug, randomId } from 'src/common/utils/functions.util';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { blogStatus } from './enums/status.enum';
@@ -21,6 +21,12 @@ export class BlogService {
     let { title, slug, content, description, image, timeToRead } = createBlogDto
     let slugData = title ?? slug
     slug = createSlug(slugData)
+    const isExist = await this.checkBlogBySlug(slug)
+    if (isExist) 
+    {
+      slug += `-${randomId()}`
+    }
+    // create blog
     const blog = this.blogRepository.create({
       title,
       slug,
@@ -53,4 +59,9 @@ export class BlogService {
   remove(id: number) {
     return `This action removes a #${id} blog`;
   }
+  async checkBlogBySlug(slug: string) {
+    const blog = await this.blogRepository.findOneBy({ slug })
+    // if exist return true
+    return !!blog
+  } 
 }
