@@ -5,7 +5,7 @@ export class CreateBlogDto {
     @ApiProperty({ example: 'title' })
     @IsNotEmpty()
     @IsString()
-    @Length(3, 30)
+    @Length(3, 100)
     title: string;
     @ApiProperty({ example: '5' })
     @IsNotEmpty()
@@ -16,7 +16,7 @@ export class CreateBlogDto {
     @ApiProperty({ example: 'description' })
     @IsNotEmpty()
     @IsString()
-    @Length(3, 100)
+    @Length(3, 1000)
     description: string;
 
     @ApiPropertyOptional()

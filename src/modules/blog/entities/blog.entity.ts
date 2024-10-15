@@ -19,7 +19,7 @@ export class BlogEntity extends BaseFields {
     @Column({ unique: true })
     slug: string
     @Column()
-    c: string
+    timeToRead: string
     @Column({ default: blogStatus.Draft })
     status: string
     @Column()
