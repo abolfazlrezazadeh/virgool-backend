@@ -44,6 +44,19 @@ export class BlogService {
 
   }
 
+  async getUserBlog(){
+    const user = this.request.user
+    const blogs = await this.blogRepository.find({
+      where: {
+        authorId: user.id
+      },
+      order:{
+        id:"DESC"
+      }
+    })
+    return blogs
+  }
+
   findAll() {
     return `This action returns all blog`;
   }

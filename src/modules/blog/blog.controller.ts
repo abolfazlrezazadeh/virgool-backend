@@ -20,9 +20,9 @@ export class BlogController {
     return this.blogService.create(createBlogDto);
   }
 
-  @Get()
-  findAll() {
-    return this.blogService.findAll();
+  @Get('/my-blogs')
+  getUserBlog() {
+    return this.blogService.getUserBlog();
   }
 
   @Get(':id')
