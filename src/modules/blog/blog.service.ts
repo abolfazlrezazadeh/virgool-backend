@@ -8,6 +8,8 @@ import { createSlug, randomId } from 'src/common/utils/functions.util';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { blogStatus } from './enums/status.enum';
+import { paginationDto } from '../../common/dto/pagination.dto';
+import { paginationResponse, paginationSolver } from 'src/common/utils/pagination.util';
 
 @Injectable({ scope: Scope.REQUEST })
 export class BlogService {
@@ -22,8 +24,7 @@ export class BlogService {
     let slugData = title ?? slug
     slug = createSlug(slugData)
     const isExist = await this.checkBlogBySlug(slug)
-    if (isExist) 
-    {
+    if (isExist) {
       slug += `-${randomId()}`
     }
     // create blog
@@ -39,26 +40,40 @@ export class BlogService {
     })
     await this.blogRepository.save(blog)
     return {
-      message :"blog created successfully"
+      message: "blog created successfully"
     }
 
   }
 
-  async getUserBlog(){
+  async getUserBlog() {
     const user = this.request.user
     const blogs = await this.blogRepository.find({
       where: {
         authorId: user.id
       },
-      order:{
-        id:"DESC"
+      order: {
+        id: "DESC"
       }
     })
     return blogs
   }
 
-  findAll() {
-    return `This action returns all blog`;
+  async findAll(paginationDto: paginationDto) {
+    const {limit,page,skip} = paginationSolver(paginationDto)
+    const [blogs,count] = await this.blogRepository.find({
+      where: {
+      },
+      order: {
+        id: "DESC"
+      },
+      skip,
+      take:limit
+    })
+    return {
+      pagination : paginationResponse(page,limit,+count),
+      blogs
+
+    }
   }
 
   findOne(id: number) {
@@ -76,5 +91,5 @@ export class BlogService {
     const blog = await this.blogRepository.findOneBy({ slug })
     // if exist return true
     return !!blog
-  } 
+  }
 }
