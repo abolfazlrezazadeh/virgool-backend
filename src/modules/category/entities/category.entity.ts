@@ -1,6 +1,7 @@
 import { BaseFields } from "src/common/abstracts/baseFields.abstract";
 import { entityName } from "src/common/enums/entityNames.enum";
-import { Column, Entity } from "typeorm";
+import { BlogCategoryEntity } from "src/modules/blog/entities/blog-category.entity";
+import { Column, Entity, OneToMany } from "typeorm";
 
 @Entity(entityName.CATEGORY)
 export class CategoryEntity extends BaseFields {
@@ -8,4 +9,6 @@ export class CategoryEntity extends BaseFields {
     title: string
     @Column({nullable:true})
     priority:number
+    @OneToMany(() => BlogCategoryEntity, blogCategory => blogCategory.category, { onDelete: "CASCADE" })
+    blogCategory: BlogCategoryEntity[]
 }

@@ -6,6 +6,7 @@ import { UserEntity } from "src/modules/user/entities/user.entity";
 import { BlogLikesEntity } from "./likes.entity";
 import { BlogBookmarkEntity } from "./bookmarks.entity";
 import { blogCommentsEntity } from "./comments.entity";
+import { BlogCategoryEntity } from "./blog-category.entity";
 @Entity(entityName.Blog)
 export class BlogEntity extends BaseFields {
     @Column()
@@ -30,6 +31,9 @@ export class BlogEntity extends BaseFields {
 
     @OneToMany(() => BlogLikesEntity, likes => likes.blog, { onDelete: "CASCADE" })
     likes: BlogLikesEntity[]
+
+    @OneToMany(() => BlogCategoryEntity, category => category.blog, { onDelete: "CASCADE" })
+    category: BlogCategoryEntity[]
 
     @OneToMany(() => BlogBookmarkEntity, bookmark => bookmark.blog, { onDelete: "CASCADE" })
     bookmark: BlogLikesEntity[]

@@ -8,6 +8,7 @@ export enum entityName {
     Blog="blog",
     BlogLikes="blogLikes",
     BlogComments="blogComments",
-    BlogBookmarks="blogBookmarks"
+    BlogBookmarks="blogBookmarks",
+    BlogCategory='blogCategory'
     
 }
