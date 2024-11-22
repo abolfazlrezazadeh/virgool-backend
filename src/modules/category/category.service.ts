@@ -26,6 +26,13 @@ export class CategoryService {
       message: publicMessages.Created
     }
   }
+  async insertByTitle(title: string) {
+    const category = this.categoryRepository.create({
+      title,
+    })
+    return await this.categoryRepository.save(category)
+    
+  }
 
   async checkExistCategory(title: string): Promise<string> {
     title = title.trim()
@@ -51,6 +58,9 @@ export class CategoryService {
     const category = await this.categoryRepository.findOneBy({ id })
     if (!category) throw new BadRequestException(CategoryMessages.CategoryNotFound)
     return category
+  }
+  async findOneByTitle(title: string) {
+    return await this.categoryRepository.findOneBy({ title })
   }
 
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {

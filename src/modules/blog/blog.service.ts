@@ -10,17 +10,28 @@ import { Request } from 'express';
 import { blogStatus } from './enums/status.enum';
 import { paginationDto } from '../../common/dto/pagination.dto';
 import { paginationResponse, paginationSolver } from 'src/common/utils/pagination.util';
+import { isArray } from 'class-validator';
+import { CategoryService } from '../category/category.service';
+import { BlogCategoryEntity } from './entities/blog-category.entity';
 
 @Injectable({ scope: Scope.REQUEST })
 export class BlogService {
   constructor(
     @InjectRepository(BlogEntity) private blogRepository: Repository<BlogEntity>,
-    @Inject(REQUEST) private request: Request
+    @InjectRepository(BlogCategoryEntity) private blogCategoryRepository: Repository<BlogCategoryEntity>,
+    @Inject(REQUEST) private request: Request,
+    private categoryService: CategoryService
 
   ) { }
   async create(createBlogDto: CreateBlogDto) {
     const user = this.request.user
-    let { title, slug, content, description, image, timeToRead } = createBlogDto
+    let { title, slug, content, description, image, timeToRead, categories } = createBlogDto
+    // convert string to array
+    if (!isArray(categories) && typeof categories === "string") {
+      categories = categories.split(",")
+    } else if (!categories) {
+      categories = []
+    }
     let slugData = title ?? slug
     slug = createSlug(slugData)
     const isExist = await this.checkBlogBySlug(slug)
@@ -28,7 +39,7 @@ export class BlogService {
       slug += `-${randomId()}`
     }
     // create blog
-    const blog = this.blogRepository.create({
+    let blog = this.blogRepository.create({
       title,
       slug,
       content,
@@ -38,7 +49,19 @@ export class BlogService {
       status: blogStatus.Draft,
       authorId: user.id
     })
-    await this.blogRepository.save(blog)
+    blog = await this.blogRepository.save(blog)
+    // create category
+    for (const categoryTitle of categories) {
+      let category = await this.categoryService.findOneByTitle(title)
+      if (!category) {
+        category = await this.categoryService.insertByTitle(categoryTitle)
+      }
+      await this.blogCategoryRepository.insert({
+        blogId: blog.id,
+        categoryId: category.id
+      })
+    }
+
     return {
       message: "blog created successfully"
     }
@@ -59,18 +82,18 @@ export class BlogService {
   }
 
   async findAll(paginationDto: paginationDto) {
-    const {limit,page,skip} = paginationSolver(paginationDto)
-    const [blogs,count] = await this.blogRepository.find({
+    const { limit, page, skip } = paginationSolver(paginationDto)
+    const [blogs, count] = await this.blogRepository.find({
       where: {
       },
       order: {
         id: "DESC"
       },
       skip,
-      take:limit
+      take: limit
     })
     return {
-      pagination : paginationResponse(page,limit,+count),
+      pagination: paginationResponse(page, limit, +count),
       blogs
 
     }
