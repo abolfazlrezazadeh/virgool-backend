@@ -10,7 +10,7 @@ export class CreateBlogDto {
     @ApiProperty({ example: '5' })
     @IsNotEmpty()
     @IsString()
-    @Length(1,2)
+    @Length(1, 2)
     timeToRead: string;
 
     @ApiProperty({ example: 'description' })
@@ -35,4 +35,9 @@ export class CreateBlogDto {
     // @IsArray()
     categories: string[] | string
 
+}
+
+
+export class filterBlogDto {
+    category: string
 }
