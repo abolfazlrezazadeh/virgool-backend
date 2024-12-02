@@ -13,6 +13,7 @@ import { paginationResponse, paginationSolver } from 'src/common/utils/paginatio
 import { isArray } from 'class-validator';
 import { CategoryService } from '../category/category.service';
 import { BlogCategoryEntity } from './entities/blog-category.entity';
+import { entityName } from 'src/common/enums/entityNames.enum';
 
 @Injectable({ scope: Scope.REQUEST })
 export class BlogService {
@@ -99,33 +100,39 @@ export class BlogService {
     }
   }
   async findAllInCategory(paginationDto: paginationDto, filterDto: filterBlogDto) {
-    const { limit, page, skip } = paginationSolver(paginationDto)
-    const { category } = filterDto;
-    let where: FindOptionsWhere<BlogEntity> = {}
-    if(category){
-      where['category'] ={
-        category :{
-          title: category
-        }
-      }
+    const { limit, page, skip } = paginationSolver(paginationDto);
+    const { category, search } = filterDto;
+  
+    const queryBuilder = this.blogRepository.createQueryBuilder(entityName.Blog)
+      .leftJoin("blog.categories", "categories")
+      .leftJoin("categories.category", "category")
+      .addSelect(["categories.id", "categories.title"]);
+  
+    // Filter by category
+    if (category) {
+      queryBuilder.andWhere("LOWER(category.title) = :category", { category: category.toLowerCase() });
     }
-    const [blogs, count] = await this.blogRepository.find({
-      relations: {
-        category: true
-      },
-      where,
-      order: {
-        id: "DESC"
-      },
-      skip,
-      take: limit
-    })
+  
+    // Filter by search
+    if (search) {
+      queryBuilder.andWhere(
+        "(LOWER(blog.title) LIKE :search OR LOWER(blog.content) LIKE :search OR LOWER(blog.description) LIKE :search)",
+        { search: `%${search.toLowerCase()}%` }
+      );
+    }
+  
+    // Pagination and ordering
+    queryBuilder.orderBy("blog.id", "DESC").skip(skip).take(limit);
+  
+    // Execute query
+    const [blogs, count] = await queryBuilder.getManyAndCount();
+  
     return {
-      pagination: paginationResponse(page, limit, +count),
-      blogs
-
-    }
+      pagination: paginationResponse(page, limit, count),
+      blogs,
+    };
   }
+  
 
   update(id: number, updateBlogDto: UpdateBlogDto) {
     return `This action updates a #${id} blog`;

@@ -39,5 +39,6 @@ export class CreateBlogDto {
 
 
 export class filterBlogDto {
-    category: string
+    category: string;
+    search:string
 }
