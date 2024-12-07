@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, ParseIntPipe } from '@nestjs/common';
 import { BlogService } from './blog.service';
 import { CreateBlogDto, filterBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
@@ -49,8 +49,8 @@ export class BlogController {
     return this.blogService.update(+id, updateBlogDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.blogService.remove(+id);
+  @Delete('delete/:id')
+  remove(@Param('id',ParseIntPipe) id: number) {
+    return this.blogService.remove(id);
   }
 }

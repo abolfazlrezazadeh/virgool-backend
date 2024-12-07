@@ -102,17 +102,17 @@ export class BlogService {
   async findAllInCategory(paginationDto: paginationDto, filterDto: filterBlogDto) {
     const { limit, page, skip } = paginationSolver(paginationDto);
     const { category, search } = filterDto;
-  
+
     const queryBuilder = this.blogRepository.createQueryBuilder(entityName.Blog)
       .leftJoin("blog.categories", "categories")
       .leftJoin("categories.category", "category")
       .addSelect(["categories.id", "categories.title"]);
-  
+
     // Filter by category
     if (category) {
       queryBuilder.andWhere("LOWER(category.title) = :category", { category: category.toLowerCase() });
     }
-  
+
     // Filter by search
     if (search) {
       queryBuilder.andWhere(
@@ -120,26 +120,42 @@ export class BlogService {
         { search: `%${search.toLowerCase()}%` }
       );
     }
-  
+
     // Pagination and ordering
     queryBuilder.orderBy("blog.id", "DESC").skip(skip).take(limit);
-  
+
     // Execute query
     const [blogs, count] = await queryBuilder.getManyAndCount();
-  
+
     return {
       pagination: paginationResponse(page, limit, count),
       blogs,
     };
   }
-  
+
 
   update(id: number, updateBlogDto: UpdateBlogDto) {
     return `This action updates a #${id} blog`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} blog`;
+  async remove(id: number) {
+    const findBlog = await this.blogRepository.findOneBy({ id })
+    if (!findBlog)
+      return {
+        message: "this blog doesn't exist"
+      }
+    // delete blog
+
+    const deletedBlog = await this.blogRepository.delete({ id })
+    if (deletedBlog.affected > 0)
+      return {
+        message: "blog deleted successfully"
+      }
+    return {
+      message: "something went wrong"
+    }
+
+
   }
   async checkBlogBySlug(slug: string) {
     const blog = await this.blogRepository.findOneBy({ slug })
