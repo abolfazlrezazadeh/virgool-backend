@@ -14,6 +14,7 @@ import { isArray } from 'class-validator';
 import { CategoryService } from '../category/category.service';
 import { BlogCategoryEntity } from './entities/blog-category.entity';
 import { entityName } from 'src/common/enums/entityNames.enum';
+import { publicMessages } from '../auth/enums/messages.enum';
 
 @Injectable({ scope: Scope.REQUEST })
 export class BlogService {
@@ -64,7 +65,7 @@ export class BlogService {
     }
 
     return {
-      message: "blog created successfully"
+      message: publicMessages.Created
     }
 
   }
@@ -134,32 +135,93 @@ export class BlogService {
   }
 
 
-  update(id: number, updateBlogDto: UpdateBlogDto) {
-    return `This action updates a #${id} blog`;
+  async update(id: number, updateBlogDto: UpdateBlogDto) {
+    const user = this.request.user
+    let { title, slug, content, description, image, timeToRead, categories } = updateBlogDto
+    // find blog
+    let blog = await this.findBlog(id)
+    // convert string to array
+    if (!isArray(categories) && typeof categories === "string") {
+      //swagger sends array like this => category0,category1
+      categories = categories.split(",")
+    } else if (!categories) {
+      categories = []
+    }
+    let slugData;
+
+
+    if (title) {
+      slugData = title
+      blog.title = title
+    }
+    if (slug) slugData = slug
+    if (slugData) {
+      slug = createSlug(slugData)
+      const isExist = await this.checkBlogBySlug(slug)
+      if (isExist && isExist.id !== id) {
+        slug += `-${randomId()}`
+      }
+      blog.slug = slug
+    }
+    if (content) blog.content = content
+    if (description) blog.description = description
+    if (image) blog.image = image
+    if (timeToRead) blog.timeToRead = timeToRead
+    // update blog
+    blog = await this.blogRepository.save(blog)
+    // create category
+    for (const categoryTitle of categories) {
+      let category = await this.categoryService.findOneByTitle(title)
+      if (!category) {
+        category = await this.categoryService.insertByTitle(categoryTitle)
+      }
+      const findCategoryExistInBlog = await this.blogCategoryRepository.findOneBy({ categoryId: category.id, blogId: blog.id })
+      // if category doesnt exist insert new categories
+      if (!findCategoryExistInBlog) {
+        await this.blogCategoryRepository.insert({
+          blogId: blog.id,
+          categoryId: category.id
+        })
+      }
+    }
+
+    return {
+      message: publicMessages.Updated
+    }
+
   }
 
   async remove(id: number) {
-    const findBlog = await this.blogRepository.findOneBy({ id })
-    if (!findBlog)
-      return {
-        message: "this blog doesn't exist"
-      }
+    const findBlog = await this.findBlog(id)
     // delete blog
 
     const deletedBlog = await this.blogRepository.delete({ id })
     if (deletedBlog.affected > 0)
       return {
-        message: "blog deleted successfully"
+        message: publicMessages.Deleted
       }
     return {
-      message: "something went wrong"
+      message: publicMessages.CatchError
     }
-
-
   }
-  async checkBlogBySlug(slug: string) {
+  async findBlog(id: number): Promise<BlogEntity> {
+    const findBlog = await this.blogRepository.findOneBy({ id })
+    if (!findBlog)
+      throw new Error(publicMessages.DoesntExist);
+    return findBlog
+  }
+  async checkBlogBySlug(slug: string): Promise<BlogEntity> {
     const blog = await this.blogRepository.findOneBy({ slug })
     // if exist return true
-    return !!blog
+    return blog
+  }
+  async deleteEmptyInput(UpdateBlogDto: UpdateBlogDto) {
+    const nullishData: (string | number | null | undefined)[] = ["", " ", "   ", 0, null, undefined, "0"]
+    Object.keys(UpdateBlogDto).forEach((key: string) => {
+      if (UpdateBlogDto[key] === null || UpdateBlogDto[key] === undefined || UpdateBlogDto[key].trim() === "" || nullishData.includes(key)) {
+        delete UpdateBlogDto[key]
+      }
+    })
+    return UpdateBlogDto
   }
 }

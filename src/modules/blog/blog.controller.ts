@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, ParseIntPipe, Put } from '@nestjs/common';
 import { BlogService } from './blog.service';
 import { CreateBlogDto, filterBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
@@ -44,8 +44,9 @@ export class BlogController {
     return this.blogService.findAllInCategory(paginationDto,filterDto);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
+  @Put(':id')
+  @ApiConsumes(swaggerConsumes.UrlEncoded, swaggerConsumes.Json)
+  update(@Param('id',ParseIntPipe) id: Number, @Body() updateBlogDto: UpdateBlogDto) {
     return this.blogService.update(+id, updateBlogDto);
   }
 

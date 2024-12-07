@@ -59,6 +59,9 @@ export enum publicMessages {
     ExistEmail = "email already exist ...",
     ExistPhone = "phone number already exist ...",
     ExistUsername = "email already exist ...",
+    Deleted = "Deleted successfully ...",
+    CatchError = "Something went wrong , Please try again",
+    DoesntExist = "Doesnt exist"
 }
 export enum CategoryMessages {
     CategoryNotFound = "Category not found",
