@@ -15,12 +15,14 @@ import { CategoryService } from '../category/category.service';
 import { BlogCategoryEntity } from './entities/blog-category.entity';
 import { entityName } from 'src/common/enums/entityNames.enum';
 import { publicMessages } from '../auth/enums/messages.enum';
+import { BlogLikesEntity } from './entities/likes.entity';
 
 @Injectable({ scope: Scope.REQUEST })
 export class BlogService {
   constructor(
     @InjectRepository(BlogEntity) private blogRepository: Repository<BlogEntity>,
     @InjectRepository(BlogCategoryEntity) private blogCategoryRepository: Repository<BlogCategoryEntity>,
+    @InjectRepository(BlogLikesEntity) private bloglikeRepository: Repository<BlogLikesEntity>,
     @Inject(REQUEST) private request: Request,
     private categoryService: CategoryService
 
@@ -134,7 +136,6 @@ export class BlogService {
     };
   }
 
-
   async update(id: number, updateBlogDto: UpdateBlogDto) {
     const user = this.request.user
     let { title, slug, content, description, image, timeToRead, categories } = updateBlogDto
@@ -189,6 +190,27 @@ export class BlogService {
       message: publicMessages.Updated
     }
 
+  }
+
+  async likeBlog(blogId:number){
+    const {id:userId} = this.request.user
+    const existBlog = await this.findBlog(blogId)
+    const likedBLog = await this.bloglikeRepository.findOneBy({blogId,userId})
+    if(likedBLog){
+      await this.bloglikeRepository.delete({id:likedBLog.id})
+      return {
+        message: publicMessages.Unliked
+      }
+    }else{
+      await this.bloglikeRepository.insert({
+        blogId,
+        userId
+      })
+      return {
+        message: publicMessages.liked
+      }
+    }
+    
   }
 
   async remove(id: number) {

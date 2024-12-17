@@ -50,6 +50,12 @@ export class BlogController {
     return this.blogService.update(+id, updateBlogDto);
   }
 
+  @Get('like/:id')
+  @ApiConsumes(swaggerConsumes.UrlEncoded, swaggerConsumes.Json)
+  likeBlog(@Param('id',ParseIntPipe) id: Number) {
+    return this.blogService.likeBlog(+id);
+  }
+
   @Delete('delete/:id')
   remove(@Param('id',ParseIntPipe) id: number) {
     return this.blogService.remove(id);
