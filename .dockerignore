@@ -1,0 +1,13 @@
+# Exclude node_modules
+node_modules
+
+# Exclude build artifacts
+dist
+
+# Exclude Docker configuration files
+Dockerfile
+.dockerignore
+
+# Exclude other files/directories
+*.log
+.env

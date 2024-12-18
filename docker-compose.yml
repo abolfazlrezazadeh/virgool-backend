@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+    container_name: main-app
+    ports:
+      - "4060:4060"
+    environment:
+      - DB_HOST=postgres-docker
+      - DB_PORT=5432
+      - DB_NAME=virgool
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=a1234
+    depends_on:
+      - postgres-docker
+
+  postgres-docker:
+    image: postgres:15
+    container_name: postgres-docker
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: a1234
+      POSTGRES_DB: virgool
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:

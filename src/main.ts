@@ -15,16 +15,15 @@ async function bootstrap() {
   app.use(cookieParser(COOKIE_SECRET));
   app.use(json({ limit: '50mb' }));
   app.use(urlencoded({ extended: true, limit: '50mb' }));
-  await app.listen(PORT, () => {
-    console.log(`api: http://localhost:${PORT}`)
-    console.log(`swagger: http://localhost:${PORT}/swagger`)
-
-  }
-  // await app.listen(PORT,"0.0.0.0", () => {
+  // await app.listen(PORT, () => {
   //   console.log(`api: http://localhost:${PORT}`)
   //   console.log(`swagger: http://localhost:${PORT}/swagger`)
 
   // }
+  await app.listen(PORT,"0.0.0.0", () => {
+    console.log(`api: http://localhost:${PORT}`)
+    console.log(`swagger: http://localhost:${PORT}/swagger`)
+  }
   );
 }
 bootstrap();
