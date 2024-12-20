@@ -109,7 +109,8 @@ export class BlogService {
     const queryBuilder = this.blogRepository.createQueryBuilder(entityName.Blog)
       .leftJoin("blog.categories", "categories")
       .leftJoin("categories.category", "category")
-      .addSelect(["categories.id", "categories.title"]);
+      .addSelect(["categories.id", "categories.title"])
+      .loadRelationCountAndMap("blog.likes","blog.likes");
 
     // Filter by category
     if (category) {

@@ -8,7 +8,7 @@ The backend provides a robust set of features for user management, content creat
 
 ## **Features**
 1. OTP Verification: Secure user registration and login with one-time password verification.
-
+i
 2. User Profile: Manage user profiles, including profile information and settings.
 
 3. User Settings: Allow users to customize their experience with settings management.

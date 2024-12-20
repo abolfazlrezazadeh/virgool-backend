@@ -13,7 +13,7 @@ services:
       - DB_USERNAME=postgres
       - DB_PASSWORD=a1234
     depends_on:
-      - postgres-docker
+      - postgres-dockerii
 
   postgres-docker:
     image: postgres:15
