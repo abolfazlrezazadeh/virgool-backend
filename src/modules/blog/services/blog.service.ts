@@ -112,8 +112,11 @@ export class BlogService {
       .leftJoin("blog.category", "blogCategories")
       .leftJoin("blogCategories.category", "category")
       .addSelect(["blogCategories.id", "category.title"])
-      .loadRelationCountAndMap("blog.likes","blog.likes")
-      .loadRelationCountAndMap("blog.bookmark","blog.bookmark")
+      .loadRelationCountAndMap("blog.likes", "blog.likes")
+      .loadRelationCountAndMap("blog.bookmark", "blog.bookmark")
+      .loadRelationCountAndMap("blog.comments", "blog.comments", "comments",
+        qb => qb.where("comments.accepted = :accepted", { accepted: true })
+      )
       .skip(skip)
       .take(limit)
 
@@ -199,16 +202,16 @@ export class BlogService {
 
   }
 
-  async likeBlog(blogId:number){
-    const {id:userId} = this.request.user
+  async likeBlog(blogId: number) {
+    const { id: userId } = this.request.user
     const existBlog = await this.findBlog(blogId)
-    const likedBLog = await this.bloglikeRepository.findOneBy({blogId,userId})
-    if(likedBLog){
-      await this.bloglikeRepository.delete({id:likedBLog.id})
+    const likedBLog = await this.bloglikeRepository.findOneBy({ blogId, userId })
+    if (likedBLog) {
+      await this.bloglikeRepository.delete({ id: likedBLog.id })
       return {
         message: publicMessages.Unliked
       }
-    }else{
+    } else {
       await this.bloglikeRepository.insert({
         blogId,
         userId
@@ -217,17 +220,17 @@ export class BlogService {
         message: publicMessages.liked
       }
     }
-    
+
   }
 
-  async bookmarkBlog(blogId:number){
-    const {id:userId} = this.request.user
+  async bookmarkBlog(blogId: number) {
+    const { id: userId } = this.request.user
     const existBlog = await this.findBlog(blogId)
-    const isBookmarkedBlog = await this.BlogBookmarkRepository.findOneBy({blogId,userId})
-    if(isBookmarkedBlog){
-      await this.BlogBookmarkRepository.delete({id:isBookmarkedBlog.id})
+    const isBookmarkedBlog = await this.BlogBookmarkRepository.findOneBy({ blogId, userId })
+    if (isBookmarkedBlog) {
+      await this.BlogBookmarkRepository.delete({ id: isBookmarkedBlog.id })
       return {
-        message : publicMessages.UnBookmarked
+        message: publicMessages.UnBookmarked
       }
     }
     await this.BlogBookmarkRepository.insert({
@@ -235,7 +238,7 @@ export class BlogService {
       userId
     })
     return {
-      message : publicMessages.Bookmarked
+      message: publicMessages.Bookmarked
     }
   }
 
