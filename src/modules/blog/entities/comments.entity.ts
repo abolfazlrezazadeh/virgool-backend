@@ -15,7 +15,7 @@ export class blogCommentsEntity extends BaseFields {
     user:UserEntity
 
     @Column()
-    userId: string
+    userId: number
 
     @ManyToOne(() => BlogEntity, blog => blog.comments,{onDelete:"CASCADE"})
     blog:BlogEntity

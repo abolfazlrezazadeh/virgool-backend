@@ -65,7 +65,9 @@ export enum publicMessages {
     Unliked = "blog unliked",
     liked ="blog liked",
     Bookmarked = "blog bookmarked",
-    UnBookmarked = "blog unBookmarked"
+    UnBookmarked = "blog unBookmarked",
+    CreateComment = "comment created successfully",
+    DeleteComment = "comment deleted successfully",
 }
 export enum CategoryMessages {
     CategoryNotFound = "Category not found",
