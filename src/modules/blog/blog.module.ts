@@ -8,9 +8,18 @@ import { CategoryService } from '../category/category.service';
 import { CategoryEntity } from '../category/entities/category.entity';
 import { BlogCategoryEntity } from './entities/blog-category.entity';
 import { BlogLikesEntity } from './entities/likes.entity';
+import { BlogBookmarkEntity } from './entities/bookmarks.entity';
 
 @Module({
-  imports: [AuthModule, TypeOrmModule.forFeature([BlogEntity, CategoryEntity, BlogCategoryEntity, BlogLikesEntity])],
+  imports: [
+    AuthModule,
+    TypeOrmModule.forFeature([
+      BlogEntity,
+      CategoryEntity,
+      BlogCategoryEntity,
+      BlogLikesEntity,
+      BlogBookmarkEntity
+    ])],
   controllers: [BlogController],
   providers: [BlogService, CategoryService],
 })

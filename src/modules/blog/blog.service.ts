@@ -16,6 +16,7 @@ import { BlogCategoryEntity } from './entities/blog-category.entity';
 import { entityName } from 'src/common/enums/entityNames.enum';
 import { publicMessages } from '../auth/enums/messages.enum';
 import { BlogLikesEntity } from './entities/likes.entity';
+import { BlogBookmarkEntity } from './entities/bookmarks.entity';
 
 @Injectable({ scope: Scope.REQUEST })
 export class BlogService {
@@ -23,6 +24,7 @@ export class BlogService {
     @InjectRepository(BlogEntity) private blogRepository: Repository<BlogEntity>,
     @InjectRepository(BlogCategoryEntity) private blogCategoryRepository: Repository<BlogCategoryEntity>,
     @InjectRepository(BlogLikesEntity) private bloglikeRepository: Repository<BlogLikesEntity>,
+    @InjectRepository(BlogBookmarkEntity) private BlogBookmarkRepository: Repository<BlogBookmarkEntity>,
     @Inject(REQUEST) private request: Request,
     private categoryService: CategoryService
 
@@ -107,10 +109,13 @@ export class BlogService {
     const { category, search } = filterDto;
 
     const queryBuilder = this.blogRepository.createQueryBuilder(entityName.Blog)
-      .leftJoin("blog.categories", "categories")
-      .leftJoin("categories.category", "category")
-      .addSelect(["categories.id", "categories.title"])
-      .loadRelationCountAndMap("blog.likes","blog.likes");
+      .leftJoin("blog.category", "blogCategories")
+      .leftJoin("blogCategories.category", "category")
+      .addSelect(["blogCategories.id", "category.title"])
+      .loadRelationCountAndMap("blog.likes","blog.likes")
+      .loadRelationCountAndMap("blog.bookmark","blog.bookmark")
+      .skip(skip)
+      .take(limit)
 
     // Filter by category
     if (category) {
@@ -119,14 +124,15 @@ export class BlogService {
 
     // Filter by search
     if (search) {
+      console.log("Search Term:", search);
       queryBuilder.andWhere(
         "(LOWER(blog.title) LIKE :search OR LOWER(blog.content) LIKE :search OR LOWER(blog.description) LIKE :search)",
         { search: `%${search.toLowerCase()}%` }
       );
     }
 
-    // Pagination and ordering
-    queryBuilder.orderBy("blog.id", "DESC").skip(skip).take(limit);
+    // // Pagination and ordering
+    // queryBuilder.orderBy("blog.id", "DESC").skip(skip).take(limit);
 
     // Execute query
     const [blogs, count] = await queryBuilder.getManyAndCount();
@@ -212,6 +218,25 @@ export class BlogService {
       }
     }
     
+  }
+
+  async bookmarkBlog(blogId:number){
+    const {id:userId} = this.request.user
+    const existBlog = await this.findBlog(blogId)
+    const isBookmarkedBlog = await this.BlogBookmarkRepository.findOneBy({blogId,userId})
+    if(isBookmarkedBlog){
+      await this.BlogBookmarkRepository.delete({id:isBookmarkedBlog.id})
+      return {
+        message : publicMessages.UnBookmarked
+      }
+    }
+    await this.BlogBookmarkRepository.insert({
+      blogId,
+      userId
+    })
+    return {
+      message : publicMessages.Bookmarked
+    }
   }
 
   async remove(id: number) {

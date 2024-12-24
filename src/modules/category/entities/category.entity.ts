@@ -10,5 +10,5 @@ export class CategoryEntity extends BaseFields {
     @Column({nullable:true})
     priority:number
     @OneToMany(() => BlogCategoryEntity, blogCategory => blogCategory.category, { onDelete: "CASCADE" })
-    blogCategory: BlogCategoryEntity[]
+    blogCategories: BlogCategoryEntity[]
 }

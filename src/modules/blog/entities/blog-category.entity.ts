@@ -11,6 +11,6 @@ export class BlogCategoryEntity extends BaseFields {
     categoryId: number
     @ManyToOne(() => BlogEntity, blog => blog.category, { onDelete: "CASCADE" })
     blog: BlogEntity
-    @ManyToOne(() => CategoryEntity, category => category.blogCategory, { onDelete: "CASCADE" })
+    @ManyToOne(() => CategoryEntity, category => category.blogCategories, { onDelete: "CASCADE" })
     category: CategoryEntity
 }

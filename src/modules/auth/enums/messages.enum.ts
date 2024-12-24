@@ -63,7 +63,9 @@ export enum publicMessages {
     CatchError = "Something went wrong , Please try again",
     DoesntExist = "Doesnt exist",
     Unliked = "blog unliked",
-    liked ="blog liked"
+    liked ="blog liked",
+    Bookmarked = "blog bookmarked",
+    UnBookmarked = "blog unBookmarked"
 }
 export enum CategoryMessages {
     CategoryNotFound = "Category not found",

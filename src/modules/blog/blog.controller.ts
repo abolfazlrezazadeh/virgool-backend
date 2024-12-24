@@ -36,7 +36,7 @@ export class BlogController {
     return this.blogService.findAll(paginationDto);
   }
 
-  @Get('/')
+  @Get('/category')
   @skipAuth()
   @paginationDecorator()
   @filterBlog()
@@ -54,6 +54,12 @@ export class BlogController {
   @ApiConsumes(swaggerConsumes.UrlEncoded, swaggerConsumes.Json)
   likeBlog(@Param('id',ParseIntPipe) id: Number) {
     return this.blogService.likeBlog(+id);
+  }
+
+  @Get('bookmark/:id')
+  @ApiConsumes(swaggerConsumes.UrlEncoded, swaggerConsumes.Json)
+  bookmarkBlog(@Param('id',ParseIntPipe) id: Number) {
+    return this.blogService.bookmarkBlog(+id);
   }
 
   @Delete('delete/:id')
