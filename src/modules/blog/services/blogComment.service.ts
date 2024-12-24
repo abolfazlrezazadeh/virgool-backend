@@ -29,7 +29,7 @@ export class BlogCommentService {
         text,
         accepted: true,
         blogId,
-        parentId: parent.id? parentId:null,
+        parentId: parent? parentId:null,
         userId
     })
     return {

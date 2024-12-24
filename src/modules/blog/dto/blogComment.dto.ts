@@ -11,7 +11,7 @@ export class createCommentDto{
     @IsNumberString()
     parentId:number
     @ApiProperty()
-    @IsNumber()
+    @IsNumberString()
     blogId:number
 
 }

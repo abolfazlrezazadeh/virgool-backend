@@ -23,7 +23,7 @@ export class blogCommentsEntity extends BaseFields {
     @Column()
     blogId: number
 
-    @Column()
+    @Column({nullable:true})
     parentId: number
 
     @ManyToOne(()=> blogCommentsEntity, comment => comment.children, {onDelete:"CASCADE"})
